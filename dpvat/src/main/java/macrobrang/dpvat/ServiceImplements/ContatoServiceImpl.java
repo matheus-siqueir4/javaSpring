@@ -5,7 +5,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
+import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import macrobrang.dpvat.Models.Contato;
@@ -14,7 +15,7 @@ import macrobrang.dpvat.ServiceImplements.Exceptions.DeletionNotAllowedException
 import macrobrang.dpvat.ServiceImplements.Exceptions.ObjectNotFoundException;
 import macrobrang.dpvat.Services.ContatoService;
 
-@Component
+@Service
 public class ContatoServiceImpl implements ContatoService {
 
     @Autowired
@@ -23,8 +24,9 @@ public class ContatoServiceImpl implements ContatoService {
     @Transactional
     @Override
     public Contato createContato(Contato contato) {
-        contato.setId(null); // Define o objeto como null;
+        contato.setId(null);
         contato = this.repository.save(contato);
+
         return contato;
     
     }
@@ -32,9 +34,10 @@ public class ContatoServiceImpl implements ContatoService {
     @Transactional
     @Override
     public Contato updateContato(Contato contato) {
-        Contato newContato = findByIdContato(contato.getId());
+        Contato newContato = this.findByIdContato(contato.getId());
         newContato.setNumeroCelular(contato.getNumeroCelular());
         newContato.setEmail(contato.getEmail());
+
         return this.repository.save(newContato);
         
     } 

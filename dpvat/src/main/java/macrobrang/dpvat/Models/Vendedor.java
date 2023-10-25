@@ -8,11 +8,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
-public class Vendedor {
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor
+public class Vendedor extends BaseEntity {
     
     @Id
     @GeneratedValue(generator = "UUID")
@@ -23,7 +27,5 @@ public class Vendedor {
     @ManyToOne
     @JoinColumn(name = "contato_id")
     private Contato contato;
-
-    private LocalDateTime createdAt;
 
 }
