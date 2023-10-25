@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import macrobrang.dpvat.Models.Contato;
-import macrobrang.dpvat.RepositoryImplements.ContatoRepositoryImpl;
+import macrobrang.dpvat.ServiceImplements.ContatoServiceImpl;
 
 @RestController
 @RequestMapping("/api/contato")
@@ -28,7 +28,7 @@ import macrobrang.dpvat.RepositoryImplements.ContatoRepositoryImpl;
 public class ContatoController {
     
     @Autowired
-    private ContatoRepositoryImpl service;
+    private ContatoServiceImpl service;
 
     @GetMapping
     public ResponseEntity<List<Contato>> getAllContato() {

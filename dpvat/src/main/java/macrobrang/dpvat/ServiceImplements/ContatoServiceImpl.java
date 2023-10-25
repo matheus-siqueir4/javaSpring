@@ -1,4 +1,4 @@
-package macrobrang.dpvat.RepositoryImplements;
+package macrobrang.dpvat.ServiceImplements;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +10,12 @@ import org.springframework.stereotype.Component;
 import jakarta.transaction.Transactional;
 import macrobrang.dpvat.Models.Contato;
 import macrobrang.dpvat.Repository.ContatoRepository;
+import macrobrang.dpvat.ServiceImplements.Exceptions.DeletionNotAllowedException;
+import macrobrang.dpvat.ServiceImplements.Exceptions.ObjectNotFoundException;
 import macrobrang.dpvat.Services.ContatoService;
 
 @Component
-public class ContatoRepositoryImpl implements ContatoService {
+public class ContatoServiceImpl implements ContatoService {
 
     @Autowired
     private ContatoRepository repository;
@@ -44,8 +46,8 @@ public class ContatoRepositoryImpl implements ContatoService {
             this.repository.deleteById(id);
         
         } catch (Exception e) {
-            throw new RuntimeException(
-                "Não é possível excluir o contato"
+            throw new DeletionNotAllowedException(
+                "Não é possível excluir o contato, pois há registros relacionados"
             );
         }
     }
@@ -53,7 +55,7 @@ public class ContatoRepositoryImpl implements ContatoService {
     @Override
     public Contato findByIdContato(UUID id) {
         Optional<Contato> contato = this.repository.findById(id);
-        return contato.orElseThrow(() -> new RuntimeException(
+        return contato.orElseThrow(() -> new ObjectNotFoundException(
             "Usuário não encontrado com o id: " + id
         ));
     }

@@ -18,6 +18,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import lombok.extern.slf4j.Slf4j;
+import macrobrang.dpvat.ServiceImplements.Exceptions.DeletionNotAllowedException;
+import macrobrang.dpvat.ServiceImplements.Exceptions.ObjectNotFoundException;
 
 @Slf4j(topic = "ERROR_GLOBAL_EXCEPTION") 
 @ControllerAdvice
@@ -47,7 +49,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatusCode status,
         WebRequest request) {
 
-        var responseError = new ResponseError(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+        var responseError = new Response(HttpStatus.UNPROCESSABLE_ENTITY.value(),
         "Erro de Validação, por favor verifique os campos de erros para mais detalhes");
 
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
@@ -112,6 +114,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @param request A WebRequest que intercepta a requisição, fornecendo informações adicionais.
      * @return Um ResponseEntity contendo informações de erro relacionadas à violação de restrições.
      */
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ResponseEntity<Object> handleConstraintViolationException(
         ConstraintViolationException constraintViolationException,
         WebRequest request) {
@@ -123,6 +127,43 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request
             );
     }
+
+    /**
+     * Lida com execeção de objetos pesquisados e não encontrados no banco de dados.
+     * 
+     * @param objectNotFoundException Objeto contém a mensagem do erro.
+     * @param httpStatus O status HTTP a ser retornado na resposta.
+     * @param request A WebRequest que intercepta a requisição.
+     * @return Um ResponseEntity contendo as informações do objeto não encontrado.
+     */
+    @ExceptionHandler(ObjectNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> handleObjectNotFoundExeption(
+        ObjectNotFoundException objectNotFoundException,
+        WebRequest request
+    ) {
+        log.error("Não foi encontrado o objeto: ", objectNotFoundException);
+        return buildResponseError(objectNotFoundException, HttpStatus.NOT_FOUND, request);
+    }
+
+    /**
+     * Lida com exeção de exclusão de objetos que estão relacionados.
+     *  
+     * @param deletionNViolationException Objeto que contém a mensagem do erro.
+     * @param request A WebRequest que intercepta a requisição.
+     * @return Um ResponseEntity contendo informações de erro.
+     */
+    @ExceptionHandler(DeletionNotAllowedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Object> handleDeletionNotAllowedExeception(
+        DataIntegrityViolationException deletionNViolationException,
+        WebRequest request
+    ) {
+        log.error("Não foi possível excluir", deletionNViolationException);
+
+        return buildResponseError(deletionNViolationException, HttpStatus.CONFLICT, request);
+    }
+
 
     /**
      * Constrói uma resposta de erro com base nos parâmetros fornecidos.
@@ -138,7 +179,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus httpStatus,
         WebRequest request) {
         
-            var responseError = new ResponseError(httpStatus.value(), message);
+            var responseError = new Response(httpStatus.value(), message);
 
             if(this.printStackTrace) {
             responseError.setStackTrace(ExceptionUtils.getStackTrace(ex));

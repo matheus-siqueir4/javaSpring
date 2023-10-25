@@ -1,35 +1,41 @@
 package macrobrang.dpvat.Exception;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
- * Essa classe irá gerar os erros de respostas.
+ * Cria um objeto com as informações detalhada dos erros
  * 
  */
+@Getter @Setter @RequiredArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Response {
+    
+    private final int status;
+    private final String message;
+    private String stackTrace;
+    private List<ValidationError> errors;
 
-@Data
-public class Response<T> {
-    
-    private T obj;
-    private Map<String, String> mapErrors = new HashMap<>();
-    
-    public Map<String, String> addValidationError(BindingResult result) {
+    @Getter @Setter @RequiredArgsConstructor
+    public static class ValidationError {
         
-        result.getAllErrors().forEach((error) -> {
-            if (error instanceof FieldError) {
-                String fieldName = ((FieldError) error).getField();
-                String errorMessage = error.getDefaultMessage();
-                mapErrors.put( fieldName, errorMessage);
-            }
-        });
-
-        return mapErrors;
+        private final String field;
+        private final String message;
     }
 
+    public void addValidationError(String field, String message) {
+
+        if (Objects.isNull(errors)) {
+            this.errors = new ArrayList<>();
+        }
+
+        this.errors.add(new ValidationError(field, message));
+    }
 }

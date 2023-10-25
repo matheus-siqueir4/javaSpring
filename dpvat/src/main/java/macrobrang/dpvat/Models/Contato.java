@@ -1,6 +1,5 @@
 package macrobrang.dpvat.Models;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -10,11 +9,15 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
-public class Contato {
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor 
+public class Contato extends BaseEntity {
     
     @Id
     @GeneratedValue(generator = "UUID")
@@ -29,5 +32,4 @@ public class Contato {
     @NotBlank
     private String email;
 
-    private LocalDateTime createdAt;
 }
