@@ -51,7 +51,7 @@ public class VendedorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Vendedor> updateVendedor(@Valid @RequestBody Vendedor vendedor, UUID id) {
+    public ResponseEntity<Vendedor> updateVendedor(@Valid @RequestBody Vendedor vendedor, @PathVariable UUID id) {
         vendedor.setId(id);
         this.service.updateVendedor(vendedor);
 

@@ -26,7 +26,6 @@ public class ContatoServiceImpl implements ContatoService {
     public Contato createContato(Contato contato) {
         contato.setId(null);
         contato = this.repository.save(contato);
-
         return contato;
     
     }

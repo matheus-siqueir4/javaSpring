@@ -33,7 +33,6 @@ public class VendedorServiceImpl implements VendedorService {
     public Vendedor updateVendedor(Vendedor vendedor) {
         Vendedor newVendedor = this.findbyIdVendedor(vendedor.getId());
         newVendedor.setNome(vendedor.getNome());
-        newVendedor.setContato(vendedor.getContato());
         
         return this.repository.save(newVendedor);
     }
@@ -63,6 +62,4 @@ public class VendedorServiceImpl implements VendedorService {
     public List<Vendedor> getAllVendedor() {
         return this.repository.findAll();
     }
-    
-    
 }
