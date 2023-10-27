@@ -46,7 +46,7 @@ public class VitimaController {
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/{id}")
         .buildAndExpand(vitima.getId()).toUri();
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(uri).build();
     }
 
     @PutMapping
