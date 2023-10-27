@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,27 +37,26 @@ public class Vitima extends BaseEntity {
     @Column(name = "data_nascimento", nullable = false)
     private LocalDate dataDeNascimento;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private boolean obito;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false, length = 20)
     private Acao acao;
 
     @Column(nullable = true, columnDefinition = "TEXT")
     private String descricao;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false, length = 20)
     private Regiao regiao;
 
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinColumn(name = "vitima_id")
+    @JoinColumn(name = "vitima_id", nullable = false)
     private List<Contato> contato;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendedor_id", nullable = false)
     private Vendedor vendedor;
-
 }
